@@ -1,7 +1,7 @@
 <script setup lang="jsx">
 
 import { computed, reactive, ref } from 'vue'
-import { HomeIcon, InternetIcon, SettingIcon, UserIcon } from 'tdesign-icons-vue-next'
+import { AppIcon, HomeIcon, InternetIcon, SettingIcon, UserIcon, ViewListIcon } from 'tdesign-icons-vue-next'
 import AccountColumn from '@/components/AccountColumn.vue'
 import HomePage from '@/components/HomePage.vue'
 import InfoPage from '@/components/WelcomeItem.vue'
@@ -20,6 +20,10 @@ const pages = reactive({
   upgrade: {
     name: '账号升级',
     icon: InternetIcon
+  },
+  third_party: {
+    name: '授权管理 ',
+    icon: AppIcon
   },
   setting: {
     name: '更多设置',
@@ -43,6 +47,9 @@ const change_page = (value) => {
   current_page.value = value
   console.log(value)
 }
+
+const collapsed = ref(false)
+
 </script>
 
 <template>
@@ -65,26 +72,37 @@ const change_page = (value) => {
       </t-head-menu>
     </t-header>
     <t-layout>
-      <t-aside style="border-top: 1px solid var(--component-border)">
-        <t-menu theme="light" :value="current_page" style="margin-right: 50px" height="550px"
+      <t-aside style="border-top: 1px solid var(--component-border);width:auto;">
+        <t-menu :collapsed="collapsed" theme="light" :value="current_page" height="550px"
                 @change="change_page">
-          <AccountColumn style="margin:10px" avatar="https://picsum.photos/200/300"
+          <AccountColumn :style="{height:collapsed?0:'40px',}"
+                         style="margin:10px; transition: height .25s ease-in-out; overflow: hidden;"
+                         avatar="https://picsum.photos/200/300"
                          username="StevenKerman"
                          sid="3022001441" />
-          <t-divider style="margin:10px" />
+          <t-divider v-show="!collapsed" style="margin:10px" />
           <t-menu-item v-for="item in page_list" :key="item.key" :value="item.key">
             <template #icon>
               <component :is="item.icon" />
             </template>
             {{ item.name }}
           </t-menu-item>
+          <template #operations>
+            <t-button class="t-demo-collapse-btn" variant="text" shape="square" @click="collapsed=!collapsed">
+              <template #icon>
+                <ViewListIcon />
+              </template>
+            </t-button>
+          </template>
         </t-menu>
       </t-aside>
       <t-layout>
         <transition name="fade" mode="out-in">
           <component :is="pages[current_page].view||'div'" class="view" style="flex:1;" />
         </transition>
-        <t-footer style="text-align: center">Copyright @ 2000-{{ new Date().getFullYear() }} TWT Studio. All Rights Reserved</t-footer>
+        <t-footer style="text-align: center">Copyright @ 2000-{{ new Date().getFullYear() }} TWT Studio. All Rights
+          Reserved
+        </t-footer>
       </t-layout>
     </t-layout>
   </t-layout>
