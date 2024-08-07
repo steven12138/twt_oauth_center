@@ -22,12 +22,24 @@ axiosInstance.interceptors.request.use(
     // Token AutoFill
     const token = useTokenManager().getToken()
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+      config.headers.token = token
     }
     return config
   },
   (error) => {
     return Promise.reject(error)
+  }
+)
+
+axiosInstance.interceptors.response.use(
+  (response) => {
+    console.log(response)
+    return response
+  },
+  (error) => {
+    if (error.code === 302) {
+      window.location.href = error.response.headers.location
+    }
   }
 )
 

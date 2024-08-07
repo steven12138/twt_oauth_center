@@ -4,7 +4,7 @@
 
 <template>
   <div style="margin:10px;">
-    <h1>Info Page</h1>
+    <h1>Home Page</h1>
   </div>
 </template>
 

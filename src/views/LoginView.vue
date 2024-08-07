@@ -1,9 +1,66 @@
 <script setup>
 
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import AccountColumn from '@/components/AccountColumn.vue'
 import * as account from '@/apis/account.js'
 import { MessagePlugin } from 'tdesign-vue-next'
+import { useRoute, useRouter } from 'vue-router'
+import { useTokenManager } from '@/stores/tokenManager.js'
+import SwitchAccountColumn from '@/components/SwitchAccountColumn.vue'
+
+
+const route = useRoute()
+const router = useRouter()
+
+const client_id = route.query.client_id
+const redirect_uri = route.query.redirect_uri
+const response_type = route.query.response_type
+const state = route.query.state
+const switch_account = route.query.switch_account || false
+
+let app_info = reactive({
+  app_id: client_id,
+  name: '天外天',
+  description: ''
+})
+
+const isOAuth = redirect_uri !== void 0 && response_type !== void 0 && client_id !== void 0
+
+async function restoreInfo() {
+  await account.restoreInfo()
+    .then((info) => {
+      account_info = info
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+}
+
+function updateAppInfo() {
+
+  account.getAppInfo(client_id).then((info) => {
+    app_info = info
+  }).catch((error) => {   
+    console.log(error)
+  })
+}
+
+onMounted(async () => {
+
+  loading.value = true
+  if (useTokenManager().getToken() != null) {
+    await restoreInfo()
+    if (isOAuth) {
+      updateAppInfo()
+      if (!switch_account) {
+        await tryAuthorize()
+      } else {
+        currentPhase.value = AuthPhase.SWITCH_ACCOUNT
+      }
+    }
+  }
+  loading.value = false
+})
 
 
 const login_data = reactive({
@@ -27,10 +84,7 @@ const AuthPhase = {
   USERNAME: 0,
   PASSWORD: 1,
   AUTHENTICATE: 2,
-
-  getName: (value) => {
-    return Object.keys(this).find(key => this[key] === value)
-  },
+  SWITCH_ACCOUNT: 4,
   next: function(value) {
     const values = Object.values(this).filter(v => typeof v === 'number')
     const currentIndex = values.indexOf(value)
@@ -50,28 +104,42 @@ let currentPhase = ref(AuthPhase.USERNAME)
 let account_info = reactive({})
 let privileges = reactive([])
 
-const checkScope = () => {
-  account.scope()
-    .then((info) => {
-      privileges = info
-      currentPhase.value = AuthPhase.AUTHENTICATE
+const tryAuthorize = async () => {
+  await account.getAuthorizeCode(client_id, redirect_uri, state, response_type)
+    .then((auth_result) => {
+      if (auth_result.action === 1) {
+        window.location.href = auth_result.data
+      } else if (auth_result.action === 0) {
+        privileges = auth_result.data
+        currentPhase.value = AuthPhase.AUTHENTICATE
+      } else {
+        MessagePlugin.error('未定义的授权行为')
+      }
     })
     .catch((error) => {
       console.log(error)
     })
+  loading.value = false
 }
 
-const tryLogin = ({ validateResult }) => {
+const tryLogin = async ({ validateResult }) => {
   if (!validateResult) return
+  loading.value = true
 
-  account.login(login_data.username, login_data.password)
+  await account.login(login_data.username, login_data.password)
     .then((info) => {
       account_info = info
-      checkScope()
+      if (isOAuth)
+        tryAuthorize()
+      else
+        router.push({
+          name: 'home'
+        })
     })
     .catch((error) => {
       console.log(error)
     })
+  loading.value = false
 }
 
 const nextStep = () => {
@@ -105,11 +173,21 @@ const previousStep = () => {
 }
 
 
-const platform = ref('Lorem Ipsum')
+const authorizeScope = async () => {
+  loading.value = true
+  await account.authorizeNewApp(client_id).then(() => {
+    console.log('get here')
+    tryAuthorize()
+  }).catch((error) => {
+    console.log(error)
+    loading.value = false
+  })
+}
 
+const loading = ref(false)
 
-const authenticate=()=>{
-
+const logout = () => {
+  currentPhase.value = AuthPhase.USERNAME
 }
 
 </script>
@@ -143,13 +221,14 @@ const authenticate=()=>{
             <div class="spacer"></div>
             <div class="action-button">
               <t-button variant="text" theme="primary" size="large">创建账号</t-button>
-              <t-button variant="base" shape="round" theme="primary" size="large" @click="nextStep">下一步
+              <t-button variant="base" shape="round" theme="primary" size="large" :disabled="loading" @click="nextStep">
+                下一步
               </t-button>
             </div>
           </div>
           <div class="step" v-else-if="currentPhase=== AuthPhase.AUTHENTICATE">
             <div class="action-content">
-              <span class="action-name">使用天外天账号登录{{ platform }}</span>
+              <span class="action-name">使用天外天账号登录{{ app_info.name }}</span>
               <AccountColumn avatar="https://picsum.photos/200/300" :username="account_info.nickname"
                              :sid="account_info.userNumber" />
               <div class="privileges">
@@ -164,8 +243,25 @@ const authenticate=()=>{
               <t-button variant="text" shape="round" theme="primary" size="large"
                         @click="previousStep">返回
               </t-button>
-              <t-button variant="base" shape="round" theme="primary" size="large" @click="authenticate">确认授权
+              <t-button variant="base" shape="round" theme="primary" size="large" :disabled="loading"
+                        @click="authorizeScope">确认授权
               </t-button>
+            </div>
+          </div>
+          <div class="step" v-else-if="currentPhase=== AuthPhase.SWITCH_ACCOUNT">
+            <div class="action-content">
+              <span class="action-name">请选择账号在{{ platform }}上继续</span>
+              <div class="account-groups">
+                <t-divider class="thin" />
+                <AccountColumn @click="tryAuthorize" avatar="https://picsum.photos/200/300"
+                               :username="account_info.nickname"
+                               :sid="account_info.userNumber" />
+                <t-divider class="thin" />
+                <SwitchAccountColumn @click="logout" />
+                <t-divider class="thin" />
+              </div>
+            </div>
+            <div class="action-button">
             </div>
           </div>
         </transition>
@@ -175,7 +271,9 @@ const authenticate=()=>{
 </template>
 
 <style scoped>
-
+.thin {
+  margin: 5px 0;
+}
 
 .action-content {
   display: flex;
