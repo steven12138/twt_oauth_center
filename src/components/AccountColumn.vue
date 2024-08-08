@@ -1,12 +1,14 @@
 <script setup>
+import { userInfo } from '../stores/userInfo.js'
+
 defineProps({
   avatar: {
     type: String,
-    required: true
+    required: false
   },
   username: {
     type: String,
-    required: true
+    required: false
   },
   sid: {
     type: String,
@@ -14,6 +16,7 @@ defineProps({
     default: null
   }
 })
+const user_info = userInfo
 </script>
 
 <template>
@@ -21,9 +24,9 @@ defineProps({
     <div class="avatar-box" :style="{backgroundImage: `url(${avatar}`}"></div>
 
     <div class="account-info">
-      <span class="username">{{ username }}</span>
+      <span class="username">{{ username ||  user_info.nickname }}</span>
 
-      <span class="sid" v-if="sid!=null">{{ sid }}</span>
+      <span class="sid">{{ sid || user_info.userNumber }}</span>
     </div>
   </div>
 </template>

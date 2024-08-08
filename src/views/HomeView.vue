@@ -1,12 +1,13 @@
 <script setup lang="jsx">
 
-import { computed, reactive, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { AppIcon, HomeIcon, InternetIcon, SettingIcon, UserIcon, ViewListIcon } from 'tdesign-icons-vue-next'
 import AccountColumn from '@/components/AccountColumn.vue'
 import HomePage from '@/components/HomePage.vue'
 import InfoPage from '@/components/WelcomeItem.vue'
+import { getUserInfo, userInfo } from '@/stores/userInfo.js'
 
-const pages = reactive({
+const pages = {
   home: {
     name: '首页',
     icon: HomeIcon,
@@ -29,11 +30,9 @@ const pages = reactive({
     name: '更多设置',
     icon: SettingIcon
   }
-})
+}
 
-const page_list = computed(() => {
-  return Object.entries(pages).map(([key, value]) => ({ key, ...value }))
-})
+const page_list = Object.entries(pages).map(([key, value]) => ({ key, ...value }))
 
 const options = [
   { content: '修改密码', value: 1 },
@@ -50,6 +49,8 @@ const change_page = (value) => {
 
 const collapsed = ref(false)
 
+
+
 </script>
 
 <template>
@@ -57,7 +58,7 @@ const collapsed = ref(false)
     <t-header>
       <t-head-menu value="item1" height="120px">
         <template #logo>
-          <img height="40" class="logo" src="@/assets/logo.png" alt="logo" />
+          <img height="40px" class="logo" src="@/assets/logo.png" alt="logo" />
           <span style="font: var(--td-font-title-large); margin-left: 10px;">TWT Studio</span>
         </template>
         <template #operations>
@@ -77,9 +78,7 @@ const collapsed = ref(false)
                 @change="change_page">
           <AccountColumn :style="{height:collapsed?0:'40px',}"
                          style="margin:10px; transition: height .25s ease-in-out; overflow: hidden;"
-                         avatar="https://picsum.photos/200/300"
-                         username="StevenKerman"
-                         sid="3022001441" />
+                         avatar="https://picsum.photos/200/300" />
           <t-divider v-show="!collapsed" style="margin:10px" />
           <t-menu-item v-for="item in page_list" :key="item.key" :value="item.key">
             <template #icon>

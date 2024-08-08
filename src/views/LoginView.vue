@@ -19,7 +19,7 @@ const state = route.query.state
 const switch_account = route.query.switch_account || false
 
 let app_info = reactive({
-  app_id: client_id,
+  app_id: client_id,  // default value
   name: '天外天',
   description: ''
 })
@@ -57,6 +57,11 @@ onMounted(async () => {
       } else {
         currentPhase.value = AuthPhase.SWITCH_ACCOUNT
       }
+    }
+    else{
+      await router.push({
+        name: 'home'
+      })
     }
   }
   loading.value = false
