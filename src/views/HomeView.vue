@@ -5,7 +5,6 @@ import { AppIcon, HomeIcon, InternetIcon, SettingIcon, UserIcon, ViewListIcon } 
 import AccountColumn from '@/components/AccountColumn.vue'
 import HomePage from '@/components/HomePage.vue'
 import InfoPage from '@/components/WelcomeItem.vue'
-import { getUserInfo, userInfo } from '@/stores/userInfo.js'
 
 const pages = {
   home: {
@@ -48,7 +47,6 @@ const change_page = (value) => {
 }
 
 const collapsed = ref(false)
-
 
 
 </script>
@@ -96,9 +94,11 @@ const collapsed = ref(false)
         </t-menu>
       </t-aside>
       <t-layout>
-        <transition name="fade" mode="out-in">
-          <component :is="pages[current_page].view||'div'" class="view" style="flex:1;" />
-        </transition>
+        <div class="main">
+          <transition name="fade" mode="out-in">
+            <component :is="pages[current_page].view||'div'" class="view" />
+          </transition>
+        </div>
         <t-footer style="text-align: center">Copyright @ 2000-{{ new Date().getFullYear() }} TWT Studio. All Rights
           Reserved
         </t-footer>
@@ -107,3 +107,10 @@ const collapsed = ref(false)
   </t-layout>
 </template>
 
+
+<style scoped>
+.main {
+  padding: 24px;
+  flex: 1;
+}
+</style>
