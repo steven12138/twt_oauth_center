@@ -1,6 +1,6 @@
 <script setup lang="jsx">
 import { userInfo } from '@/stores/userInfo.js'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { QuestionnaireIcon, UserIcon } from 'tdesign-icons-vue-next'
 
 const excluded_keys = [
@@ -66,6 +66,13 @@ const shortcut_list = [
 ]
 
 const icon = computed(() => () => < UserIcon />)
+
+const date = ref("")
+
+setInterval(() => {
+  date.value = new Date().toLocaleString()
+}, 1000)
+
 </script>
 
 <template>
@@ -78,7 +85,7 @@ const icon = computed(() => () => < UserIcon />)
           </span>
         </template>
         <template #actions>
-          <h1>{{ new Date().toLocaleString() }}</h1>
+          <h1>{{ date }}</h1>
         </template>
       </t-card>
       <t-card :bordered="false">
@@ -91,7 +98,7 @@ const icon = computed(() => () => < UserIcon />)
         </t-descriptions>
       </t-card>
       <div class="privacy-row">
-        <t-card style="flex:1; overflow: hidden">
+        <t-card style="flex:1; overflow: hidden" :bordered="false">
           <template #title>
             <span style="font: var(--td-font-body-large); font-size: 1.3em;">隐私与第三方应用</span>
           </template>
@@ -104,7 +111,7 @@ const icon = computed(() => () => < UserIcon />)
             <t-link theme="primary" size="medium" variant="text">管理第三方应用授权</t-link>
           </template>
         </t-card>
-        <t-card style="flex:1; overflow: hidden">
+        <t-card style="flex:1; overflow: hidden" :bordered="false">
           <template #title>
             <span style="font: var(--td-font-body-large); font-size: 1.3em;">升学与账号升级</span>
           </template>
@@ -120,7 +127,7 @@ const icon = computed(() => () => < UserIcon />)
       </div>
     </div>
     <div class="info-sec-col">
-      <t-card theme="poster2" :bordered="false">
+      <t-card theme="poster2" :bordered="false" style="overflow: hidden">
         <template #cover>
           <div class="cover"></div>
         </template>
@@ -155,7 +162,6 @@ const icon = computed(() => () => < UserIcon />)
 
 .desc-half-card {
   width: 50%;
-  color: var(--td-font-gray-2)
 }
 
 .cover-privacy {
