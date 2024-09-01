@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useTokenManager } from '@/stores/tokenManager.js'
+import { useTokenManager } from '@/stores/token_manager.js'
 import { MessagePlugin } from 'tdesign-vue-next'
 
 const env = import.meta.env

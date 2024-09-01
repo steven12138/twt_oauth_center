@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
-import { useTokenManager } from '@/stores/tokenManager.js'
+import { useTokenManager } from '@/stores/token_manager.js'
 import { getUserInfo } from '@/stores/userInfo.js'
 
 const router = createRouter({

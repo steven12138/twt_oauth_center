@@ -5,7 +5,7 @@ import AccountColumn from '@/components/AccountColumn.vue'
 import * as account from '@/apis/account.js'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { useRoute, useRouter } from 'vue-router'
-import { useTokenManager } from '@/stores/tokenManager.js'
+import { useTokenManager } from '@/stores/token_manager.js'
 import SwitchAccountColumn from '@/components/SwitchAccountColumn.vue'
 
 

@@ -1,5 +1,5 @@
 import axios from './axios.js'
-import { useTokenManager } from '@/stores/tokenManager.js'
+import { useTokenManager } from '@/stores/token_manager.js'
 
 export function getUserInfo() {
   return axios.get('/api/user/single')

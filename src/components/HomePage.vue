@@ -2,6 +2,7 @@
 import { userInfo } from '@/stores/userInfo.js'
 import { computed, ref } from 'vue'
 import { QuestionnaireIcon, UserIcon } from 'tdesign-icons-vue-next'
+import { current_page } from '@/stores/dashboard_state.js'
 
 const excluded_keys = [
   'token',
@@ -13,6 +14,35 @@ const excluded_keys = [
   'upgradeNeed',
   'avatar'
 ]
+
+const greetings = {
+  morning: { range: [5, 8], message: '早上好，新的一天开始啦！' },   // 5点到8点
+  forenoon: { range: [8, 12], message: '上午好，祝你有美好的一天？' }, // 8点到12点
+  noon: { range: [12, 14], message: '中午好，别忘了休息一下再继续哦！' }, // 12点到14点
+  afternoon: { range: [14, 18], message: '下午好，继续加油！' }, // 14点到18点
+  evening: { range: [18, 23], message: '晚上好，适当放松一下吧！' },  // 18点到23点
+  midnight: { range: [23, 2], message: '夜深了，早点休息！' }, // 23点到2点
+  earlyMorning: { range: [2, 5], message: '凌晨了，注意休息哦！' } // 2点到5点
+}
+
+
+function getGreeting() {
+  const now = new Date() // 获取当前日期和时间
+  const hour = now.getHours() // 获取当前小时
+
+  // 遍历对象来找到合适的时间段
+  for (const key in greetings) {
+    const { range, message } = greetings[key]
+    const [start, end] = range
+
+    // 处理跨天的时间段（例如: 23点到2点）
+    if ((start <= end && hour >= start && hour < end) ||
+      (start > end && (hour >= start || hour < end))) {
+      return message // 返回对应的问候语
+    }
+  }
+}
+
 
 const info_key_map = {
   userNumber: '学号',
@@ -67,11 +97,12 @@ const shortcut_list = [
 
 const icon = computed(() => () => < UserIcon />)
 
-const date = ref("")
+const date = ref(new Date().toLocaleString())
 
 setInterval(() => {
   date.value = new Date().toLocaleString()
 }, 1000)
+
 
 </script>
 
@@ -81,7 +112,7 @@ setInterval(() => {
       <t-card class="greeting" :bordered="false">
         <template #title>
           <span style="font: var(--td-font-body-large); font-size: 1.3em;padding: 20px 0;">
-            Hi, {{ userInfo.nickname }}
+            Hi, {{ userInfo.nickname ?? '天外天用户' }}, {{ getGreeting() }}
           </span>
         </template>
         <template #actions>
@@ -93,8 +124,18 @@ setInterval(() => {
           <span style="font: var(--td-font-body-large); font-size: 1.3em;">个人信息</span>
         </template>
         <t-descriptions :column="4" item-layout="vertical">
-          <t-descriptions-item v-for="(item, index) in user_info_keys" :key="index" :label="item.key">{{ item.value }}
-          </t-descriptions-item>
+          <template v-if="Object.keys(userInfo).length===0">
+            <t-descriptions-item v-for="(item, index) in info_key_map" :key="index"
+                                 :label="item">
+              <t-skeleton animation="gradient" :row-col="[1]" />
+            </t-descriptions-item>
+          </template>
+          <template v-else>
+            <t-descriptions-item v-for="(item, index) in user_info_keys" :key="index" :label="item.key">
+            <span style="display:block;width: 100%; text-overflow: ellipsis; overflow: hidden;"
+                  :title="item.value">{{ item.value }}</span>
+            </t-descriptions-item>
+          </template>
         </t-descriptions>
       </t-card>
       <div class="privacy-row">
@@ -108,7 +149,9 @@ setInterval(() => {
             <div class="cover-half-card-image cover-privacy"></div>
           </div>
           <template #footer>
-            <t-link theme="primary" size="medium" variant="text">管理第三方应用授权</t-link>
+            <t-link theme="primary" size="medium" variant="text" @click="current_page='third_party'">
+              管理第三方应用授权
+            </t-link>
           </template>
         </t-card>
         <t-card style="flex:1; overflow: hidden" :bordered="false">
@@ -121,7 +164,7 @@ setInterval(() => {
             <div class="cover-half-card-image cover-upgrade"></div>
           </div>
           <template #footer>
-            <t-link theme="primary" size="medium" variant="text">前往账号升级</t-link>
+            <t-link theme="primary" size="medium" variant="text" @click="current_page='upgrade'">前往账号升级</t-link>
           </template>
         </t-card>
       </div>
@@ -231,7 +274,7 @@ setInterval(() => {
 }
 
 .info-first-col {
-  flex: 3 3 1000px;
+  flex: 3 3 900px;
   display: flex;
   flex-direction: column;
   gap: 24px;
