@@ -266,10 +266,11 @@ async function register() {
                 <t-input v-model="register_form.sid" placeholder="学号/工资号" size="large" />
               </t-form-item>
               <t-form-item name="id" label-width="0px" :required-mark="false"
-                           help="居民身份证/港澳台来访通行证/护照/港澳身份证">
+                           help="居民身份证/港澳台来访通行证/护照/港澳身份证, X请大写">
                 <t-input v-model="register_form.id" placeholder="证件号" size="large">
                 </t-input>
               </t-form-item>
+              
             </t-form>
             <div class="action-button">
               <!--              <t-button variant="text" shape="round" theme="primary" size="large"-->
