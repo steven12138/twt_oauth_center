@@ -4,6 +4,7 @@ import { reactive, ref } from 'vue'
 import { AppIcon, HomeIcon, InternetIcon, SettingIcon, ViewListIcon } from 'tdesign-icons-vue-next'
 import AccountColumn from '@/components/AccountColumn.vue'
 import HomePage from '@/components/DashboardPage/HomePage.vue'
+import SettingPage from '@/components/MoreSetting/MoreSetting.vue'
 import { current_page } from '@/stores/dashboard_state.js'
 import router from '@/router/index.js'
 import * as account from '@/apis/account.js'
@@ -31,7 +32,8 @@ const pages = {
   },
   setting: {
     name: '更多设置',
-    icon: SettingIcon
+    icon: SettingIcon,
+    view: SettingPage
   }
 }
 
