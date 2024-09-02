@@ -3,7 +3,7 @@
 import { onMounted, reactive, ref } from 'vue'
 import AccountColumn from '@/components/AccountColumn.vue'
 import * as account from '@/apis/account.js'
-import { MessagePlugin } from 'tdesign-vue-next'
+import { MessagePlugin, NotifyPlugin } from 'tdesign-vue-next'
 import { useRoute, useRouter } from 'vue-router'
 import { useTokenManager } from '@/stores/token_manager.js'
 import SwitchAccountColumn from '@/components/SwitchAccountColumn.vue'
@@ -40,7 +40,7 @@ function updateAppInfo() {
 
   account.getAppInfo(client_id).then((info) => {
     app_info = info
-  }).catch((error) => {   
+  }).catch((error) => {
     console.log(error)
   })
 }
@@ -57,8 +57,8 @@ onMounted(async () => {
       } else {
         currentPhase.value = AuthPhase.SWITCH_ACCOUNT
       }
-    }
-    else{
+    } else {
+      MessagePlugin.success('已经登录,前往个人中心')
       await router.push({
         name: 'home'
       })
@@ -136,10 +136,11 @@ const tryLogin = async ({ validateResult }) => {
       account_info = info
       if (isOAuth)
         tryAuthorize()
-      else
+      else {
         router.push({
           name: 'home'
         })
+      }
     })
     .catch((error) => {
       console.log(error)
@@ -225,7 +226,9 @@ const logout = () => {
             </t-form>
             <div class="spacer"></div>
             <div class="action-button">
-              <t-button variant="text" theme="primary" size="large">创建账号</t-button>
+              <t-button variant="text" theme="primary" size="large" @click="router.replace('/register')">
+                还没有账号，去创建
+              </t-button>
               <t-button variant="base" shape="round" theme="primary" size="large" :disabled="loading" @click="nextStep">
                 下一步
               </t-button>
@@ -276,169 +279,6 @@ const logout = () => {
 </template>
 
 <style scoped>
-.thin {
-  margin: 5px 0;
-}
-
-.action-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.step {
-  flex: 1;
-  justify-content: space-between;
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  transition: all .25s ease-in-out;
-}
-
-.action-button {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-content: center;
-  gap: 20px;
-}
-
-.spacer {
-  flex: 1;
-}
-
-.action-name {
-  font-size: 26px;
-  font-weight: 500;
-  font-family: "Microsoft YaHei UI", serif;
-  color: #4c4c4c;
-  user-select: none;
-}
-
-.welcome {
-  font-size: 16px;
-  font-weight: 400;
-  color: #4c4c4c;
-  text-wrap: nowrap;
-  transition: opacity .25s ease-in-out;
-  font-family: "Microsoft YaHei UI", serif;
-}
-
-
-.logo {
-  background-image: url("@/assets/logo.png");
-  background-size: cover;
-  background-position: center;
-  min-height: 60px;
-  min-width: 60px;
-}
-
-.logo-group {
-  flex: 1;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row;
-  align-items: center;
-  gap: 30px;
-}
-
-.title {
-  user-select: none;
-  margin-left: -10px;
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-}
-
-.action-area {
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  padding: 40px 60px;
-  width: 35vw;
-  transition: all .25s ease-in-out;
-}
-
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #F0F4F9;
-}
-
-.login-card {
-  transition: all .25s ease-in-out;
-  display: flex;
-  flex-direction: row;
-  overflow: hidden;
-  border-radius: 10px;
-  max-width: 60vw;
-  padding: 0;
-  background-color: #ffffff;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-}
-
-
-@media screen and (max-width: 600px) {
-  .welcome {
-    opacity: 0;
-  }
-
-  .action-area {
-    padding: 25px;
-  }
-}
-
-
-@media screen and (max-width: 1024px) {
-
-  .action-area {
-    width: 60vw;
-  }
-
-  .login-card {
-    max-width: 80vw;
-  }
-}
-
-@media screen and (max-width: 530px) {
-
-  .login-card {
-    max-width: none;
-    height: 100vh;
-  }
-
-  .action-area {
-    height: unset;
-    min-height: 40vh;
-    width: 100vw;
-  }
-
-  .step {
-    min-height: 40vh;
-    flex: none;
-  }
-}
-
-.decorated-img {
-  background-image: url('@/assets/decorated.png');
-  background-size: cover;
-  background-position: center;
-  height: 100%;
-  min-height: 500px;
-  width: 30vw;
-  max-width: 40%;
-  transition: all .25s ease-in-out;
-}
-
-@media screen and ( max-width: 1330px) {
-  .decorated-img {
-    width: 0;
-  }
-}
+@import "@/assets/login_view.css";
 
 </style>

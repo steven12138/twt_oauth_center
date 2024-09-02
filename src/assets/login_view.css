@@ -1,0 +1,165 @@
+
+.thin {
+    margin: 5px 0;
+}
+
+.action-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.step {
+    flex: 1;
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    transition: all .25s ease-in-out;
+}
+
+.action-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-content: center;
+    gap: 20px;
+}
+
+.spacer {
+    flex: 1;
+}
+
+.action-name {
+    font-size: 26px;
+    font-weight: 500;
+    font-family: "Microsoft YaHei UI", serif;
+    color: #4c4c4c;
+    user-select: none;
+}
+
+.welcome {
+    font-size: 16px;
+    font-weight: 400;
+    color: #4c4c4c;
+    text-wrap: nowrap;
+    transition: opacity .25s ease-in-out;
+    font-family: "Microsoft YaHei UI", serif;
+}
+
+
+.logo {
+    background-image: url("@/assets/logo.png");
+    background-size: cover;
+    background-position: center;
+    min-height: 60px;
+    min-width: 60px;
+}
+
+.logo-group {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+}
+
+.title {
+    user-select: none;
+    margin-left: -10px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.action-area {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 40px 60px;
+    width: 35vw;
+    transition: all .25s ease-in-out;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #F0F4F9;
+}
+
+.login-card {
+    transition: all .25s ease-in-out;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+    border-radius: 10px;
+    max-width: 60vw;
+    padding: 0;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}
+
+
+@media screen and (max-width: 600px) {
+    .welcome {
+        opacity: 0;
+    }
+
+    .action-area {
+        padding: 25px;
+    }
+}
+
+
+@media screen and (max-width: 1024px) {
+
+    .action-area {
+        width: 60vw;
+    }
+
+    .login-card {
+        max-width: 80vw;
+    }
+}
+
+@media screen and (max-width: 530px) {
+
+    .login-card {
+        max-width: none;
+        height: 100vh;
+    }
+
+    .action-area {
+        height: unset;
+        min-height: 40vh;
+        width: 100vw;
+    }
+
+    .step {
+        min-height: 40vh;
+        flex: none;
+    }
+}
+
+.decorated-img {
+    background-image: url('@/assets/decorated.png');
+    background-size: cover;
+    background-position: center;
+    height: 100%;
+    min-height: 500px;
+    width: 30vw;
+    max-width: 40%;
+    transition: all .25s ease-in-out;
+}
+
+@media screen and ( max-width: 1330px) {
+    .decorated-img {
+        width: 0;
+    }
+}

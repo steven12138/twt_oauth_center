@@ -57,12 +57,6 @@ export const scope = () => {
 export const getAuthorizeCode = (app_id, redirect_url, state, r_type = 'code') => {
   // https://api.twt.edu.cn/api/oauth/auth
   try {
-    console.log(({
-      response_type: r_type,
-      client_id: app_id,
-      redirect_url: redirect_url,
-      state: state
-    }))
     return axios.post('/api/oauth/auth', {
       response_type: r_type,
       client_id: app_id,
@@ -72,4 +66,34 @@ export const getAuthorizeCode = (app_id, redirect_url, state, r_type = 'code') =
   } catch (e) {
     console.log(e)
   }
+}
+
+
+export const changePassword = (new_pass) => {
+  return axios.put(`/api/password/person/reset?password=${new_pass}`)
+}
+
+export const send_phone_verify = (phone) => {
+  return axios.post(`/api/register/phone/msg?phone=${phone}`)
+}
+
+
+export const register = (
+  sid,
+  id,
+  nickname,
+  email,
+  phone,
+  phone_verify_code,
+  password
+) => {
+  return axios.post('/api/register', {
+    userNumber: id,
+    nickname: nickname,
+    phone: phone,
+    verifyCode: phone_verify_code,
+    password: password,
+    email: email,
+    idNumber: id
+  })
 }

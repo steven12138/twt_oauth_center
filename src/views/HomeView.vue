@@ -3,11 +3,12 @@
 import { reactive, ref } from 'vue'
 import { AppIcon, HomeIcon, InternetIcon, SettingIcon, ViewListIcon } from 'tdesign-icons-vue-next'
 import AccountColumn from '@/components/AccountColumn.vue'
-import HomePage from '@/components/HomePage.vue'
+import HomePage from '@/components/DashboardPage/HomePage.vue'
 import { current_page } from '@/stores/dashboard_state.js'
 import router from '@/router/index.js'
 import * as account from '@/apis/account.js'
-import { check_password } from '@/utils/password.js'
+import { check_password } from '@/utils/verify.js'
+import { MessagePlugin } from 'tdesign-vue-next'
 
 const pages = {
   home: {
@@ -122,9 +123,8 @@ const password_change_form_ref = ref(null)
 async function submit_form() {
   const res = await password_change_form_ref.value.validate()
   if (res !== true) return
-  //TODO: send request to change password
-
-  1 == 1
+  await account.changePassword(password_change_form.new_password)
+  MessagePlugin.success('密码修改成功')
   show_change_password.value = false
 }
 
