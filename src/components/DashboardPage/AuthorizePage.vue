@@ -19,14 +19,14 @@ const defaultData = [
     app_name: '党建系统',
     app_desc: '信息化党建系统, 覆盖入党, 在线学习等功能',
     authorized_scope: '全部信息',
-    trusted: false,
+    trusted: true,
     actions: '不可操作'
   },
   {
     app_name: '社会实践平台',
     app_desc: '实践队报名, 招募平台',
     authorized_scope: '全部信息',
-    trusted: false,
+    trusted: true,
     actions: '不可操作'
   }
 ]
