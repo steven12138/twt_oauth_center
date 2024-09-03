@@ -2,7 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 const validateJWT = (token, online = false) => {
-  try {
+  
     const parts = token.split('.')
     if (parts.length !== 3) {
       throw new Error('Invalid token format')
@@ -24,9 +24,6 @@ const validateJWT = (token, online = false) => {
     }
 
     return true
-  } catch (err) {
-    return false
-  }
 }
 
 

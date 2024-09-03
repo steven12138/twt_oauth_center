@@ -175,7 +175,7 @@ async function submit_form() {
             </template>
           </t-menu>
         </t-aside>
-        <t-layout>
+        <t-layout class="layout_class">
           <div class="main">
             <transition name="fade" mode="out-in">
               <component @show-change-password="showPassword" :is="pages[pageState.current_page].view??'div'" class="view" />
@@ -213,5 +213,9 @@ async function submit_form() {
 .main {
   padding: 24px;
   flex: 1;
+}
+.layout_class {
+    height: calc(100vh - 56px);
+    overflow-y: auto;
 }
 </style>

@@ -43,3 +43,24 @@ export function changePhone(code, phone) {
     }
   })
 }
+
+// 注销账号
+export function logOff() {
+  return axios.post('/api/auth/logoff')
+}
+
+// 账号升级
+export function upgradeOption() {
+  return axios.get('/api/upgrade')
+}
+
+export function upgrade(typeId) {
+  const params = new URLSearchParams()
+  params.append('typeId', typeId)
+
+  return axios.put('/api/upgrade', params, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
+}
