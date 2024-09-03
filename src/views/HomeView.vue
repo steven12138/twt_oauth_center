@@ -10,6 +10,7 @@ import * as account from '@/apis/account.js'
 import { check_password } from '@/utils/verify.js'
 import { MessagePlugin } from 'tdesign-vue-next'
 import DetailSettings from '@/components/DashboardPage/DetailSettings.vue'
+import AuthorizePage from '@/components/DashboardPage/AuthorizePage.vue'
 
 const pages = {
   home: {
@@ -23,8 +24,9 @@ const pages = {
   //   view: InfoPage
   // },
   third_party: {
-    name: '授权管理 ',
-    icon: AppIcon
+    name: '授权管理',
+    icon: AppIcon,
+    view: AuthorizePage
   },
   setting: {
     name: '更多设置',
