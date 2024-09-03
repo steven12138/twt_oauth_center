@@ -35,7 +35,7 @@ const userInfoStore = useUserInfoStore()
           <t-list-item-meta>
             <template #title>
               <div style="display: flex;align-items: center; gap: 10px;">
-                <span>邮箱: {{  userInfoStore.userInfo.email }}</span>
+                <span>邮箱: {{ userInfoStore.userInfo.email }}</span>
                 <t-tag theme="success" variant="outline">已绑定</t-tag>
               </div>
             </template>
@@ -74,6 +74,24 @@ const userInfoStore = useUserInfoStore()
         <span style="font: var(--td-font-body-large); font-size: 1.3em">账号操作</span>
       </template>
       <t-list>
+        <t-list-item>
+          <t-list-item-meta>
+            <template #title>
+              <div style="display: flex;align-items: center; gap: 10px;">
+                <span>当前账号身份: {{userInfoStore.userInfo.userNumber}} {{userInfoStore.userInfo.stuType}}</span>
+                <t-tag theme="primary" variant="outline">账号升级</t-tag>
+              </div>
+            </template>
+            <template #description>
+              <span>
+                此功能使用于同校本升硕、硕升博等学号发生变化的情况
+              </span>
+            </template>
+          </t-list-item-meta>
+          <template #action>
+            <t-link size="large" theme="warning">更新身份</t-link>
+          </template>
+        </t-list-item>
         <t-list-item>
           <t-list-item-meta>
             <template #title>
