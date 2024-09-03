@@ -184,6 +184,9 @@ async function submit_form() {
       </t-layout>
     </t-layout>
     <t-dialog v-model:visible="show_change_password" @confirm="submit_form">
+      <template #header>
+        <span>修改密码</span>
+      </template>
       <t-form
         ref="password_change_form_ref"
         :data="password_change_form"
