@@ -1,3 +1,9 @@
-import { ref } from 'vue'
+import { defineStore } from 'pinia'
 
-export const current_page = ref('home')
+export const usePageState = defineStore('page_state', {
+  state: () => ({
+
+    current_page: 'home'
+  })
+
+})

@@ -2,8 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import { useTokenManager } from '@/stores/token_manager.js'
-import { getUserInfo } from '@/stores/userInfo.js'
 import RegisterView from '@/views/RegisterView.vue'
+import { useUserInfoStore } from '@/stores/userInfo.js'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,14 +38,12 @@ const authenticate_required_pages = [
 ]
 
 
-router.beforeEach((to, from, next) => {
-  useTokenManager().getToken() ? getUserInfo() : null
-  next()
-})
+
 
 router.beforeEach((to, from, next) => {
   if (authenticate_required_pages.indexOf(to.path) !== -1) {
     useTokenManager().getToken() ? next() : next('/login')
+    useUserInfoStore().fetchUserInfo()
   }
   next()
 })

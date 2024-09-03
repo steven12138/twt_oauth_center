@@ -1,8 +1,8 @@
 <script setup lang="jsx">
-import { userInfo } from '@/stores/userInfo.js'
 import { computed, ref } from 'vue'
 import { QuestionnaireIcon, UserIcon } from 'tdesign-icons-vue-next'
-import { current_page } from '@/stores/dashboard_state.js'
+import { usePageState } from '@/stores/dashboard_state.js'
+import { useUserInfoStore } from '@/stores/userInfo.js'
 
 const excluded_keys = [
   'token',
@@ -65,8 +65,9 @@ const order = [
   'major', 'stuType', 'campus', 'idNumber'
 ]
 
+const userInfoStore = useUserInfoStore()
 const user_info_keys = computed(() => {
-  return Object.entries(userInfo.value)
+  return Object.entries(userInfoStore.userInfo)
     .filter(([key]) => !excluded_keys.includes(key))
     .filter(([key]) => key in info_key_map)
     .sort((a, b) => {
@@ -104,6 +105,8 @@ setInterval(() => {
 }, 1000)
 
 
+const pageState = usePageState()
+
 </script>
 
 <template>
@@ -112,7 +115,7 @@ setInterval(() => {
       <t-card class="greeting" :bordered="false">
         <template #title>
           <span style="font: var(--td-font-body-large); font-size: 1.3em;padding: 20px 0;">
-            Hi, {{ userInfo.nickname ?? '天外天用户' }}, {{ getGreeting() }}
+            Hi, {{ userInfoStore.userInfo.nickname ?? '天外天用户' }}, {{ getGreeting() }}
           </span>
         </template>
         <template #actions>
@@ -124,7 +127,7 @@ setInterval(() => {
           <span style="font: var(--td-font-body-large); font-size: 1.3em;">个人信息</span>
         </template>
         <t-descriptions :column="4" item-layout="vertical">
-          <template v-if="Object.keys(userInfo).length===0">
+          <template v-if="Object.keys(userInfoStore.userInfo).length===0">
             <t-descriptions-item v-for="(item, index) in info_key_map" :key="index"
                                  :label="item">
               <t-skeleton animation="gradient" :row-col="[1]" />
@@ -149,7 +152,7 @@ setInterval(() => {
             <div class="cover-half-card-image cover-privacy"></div>
           </div>
           <template #footer>
-            <t-link theme="primary" size="medium" variant="text" @click="current_page='third_party'">
+            <t-link theme="primary" size="medium" variant="text" @click="pageState.current_page='third_party'">
               管理第三方应用授权
             </t-link>
           </template>
@@ -164,7 +167,9 @@ setInterval(() => {
             <div class="cover-half-card-image cover-upgrade"></div>
           </div>
           <template #footer>
-            <t-link theme="primary" size="medium" variant="text" @click="current_page='upgrade'">前往账号升级</t-link>
+            <t-link theme="primary" size="medium" variant="text" @click="pageState.current_page='setting'">
+              前往账号升级
+            </t-link>
           </template>
         </t-card>
       </div>
@@ -175,7 +180,7 @@ setInterval(() => {
           <div class="cover"></div>
         </template>
         <template #footer>
-          <t-comment avatar="https://tdesign.gtimg.com/site/avatar-boy.jpg" :author="userInfo.nickname"
+          <t-comment avatar="https://tdesign.gtimg.com/site/avatar-boy.jpg" :author="userInfoStore.userInfo.nickname"
                      content="微北洋个人简介" />
         </template>
       </t-card>

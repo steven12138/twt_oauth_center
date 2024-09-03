@@ -1,15 +1,15 @@
-<script setup lang="jsx">
+<script setup>
 
 import { reactive, ref } from 'vue'
-import { AppIcon, HomeIcon, InternetIcon, SettingIcon, ViewListIcon } from 'tdesign-icons-vue-next'
+import { AppIcon, HomeIcon, SettingIcon, ViewListIcon } from 'tdesign-icons-vue-next'
 import AccountColumn from '@/components/AccountColumn.vue'
 import HomePage from '@/components/DashboardPage/HomePage.vue'
-import SettingPage from '@/components/DashboardPage/DetailSettings.vue'
-import { current_page } from '@/stores/dashboard_state.js'
+import { usePageState } from '@/stores/dashboard_state.js'
 import router from '@/router/index.js'
 import * as account from '@/apis/account.js'
 import { check_password } from '@/utils/verify.js'
 import { MessagePlugin } from 'tdesign-vue-next'
+import DetailSettings from '@/components/DashboardPage/DetailSettings.vue'
 
 const pages = {
   home: {
@@ -22,18 +22,14 @@ const pages = {
   //   icon: UserIcon,
   //   view: InfoPage
   // },
-  upgrade: {
-    name: '账号升级',
-    icon: InternetIcon
-  },
   third_party: {
     name: '授权管理 ',
-    icon: AppIcon
+    icon: AppIcon,
   },
   setting: {
     name: '更多设置',
     icon: SettingIcon,
-    view: SettingPage
+    view: DetailSettings
   }
 }
 
@@ -61,7 +57,7 @@ const options = [
 
 
 const change_page = (value) => {
-  current_page.value = value
+  pageState.current_page = value
   console.log(value)
 }
 
@@ -107,6 +103,8 @@ const rePasswordValidator = (val) => {
   }
 }
 
+const pageState = usePageState()
+
 const change_password_rules = {
   new_password: [
     { required: true, message: '密码为必填项', type: 'error', trigger: 'blur' },
@@ -128,6 +126,7 @@ async function submit_form() {
   MessagePlugin.success('密码修改成功')
   show_change_password.value = false
 }
+
 
 </script>
 
@@ -151,10 +150,10 @@ async function submit_form() {
       </t-header>
       <t-layout>
         <t-aside style="border-top: 1px solid var(--component-border);width:auto;">
-          <t-menu :collapsed="collapsed" theme="light" :value="current_page" height="550px"
+          <t-menu :collapsed="collapsed" theme="light" :value="pageState.current_page" height="550px"
                   @change="change_page">
             <AccountColumn :style="{height:collapsed?0:'40px',}"
-                           style="  margin:10px; transition: height .25s ease-in-out; overflow: hidden;"
+                           style="margin:10px; transition: height .25s ease-in-out; overflow: hidden;"
                            avatar="https://picsum.photos/200/300" />
             <t-divider v-show="!collapsed" style="margin:10px" />
             <t-menu-item v-for="item in page_list" :key="item.key" :value="item.key">
@@ -175,7 +174,7 @@ async function submit_form() {
         <t-layout>
           <div class="main">
             <transition name="fade" mode="out-in">
-              <component :is="pages[current_page].view||'div'" class="view" />
+              <component :is="pages[pageState.current_page].view??'div'" class="view" />
             </transition>
           </div>
           <t-footer style="text-align: center">Copyright @ 2000-{{ new Date().getFullYear() }} TWT Studio. All Rights

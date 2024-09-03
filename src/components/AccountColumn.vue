@@ -1,5 +1,6 @@
 <script setup>
-import { userInfo } from '../stores/userInfo.js'
+
+import { useUserInfoStore } from '@/stores/userInfo.js'
 
 defineProps({
   avatar: {
@@ -16,7 +17,10 @@ defineProps({
     default: null
   }
 })
-const user_info = userInfo
+
+const userInfoStore = useUserInfoStore()
+
+
 </script>
 
 <template>
@@ -24,23 +28,24 @@ const user_info = userInfo
     <div class="avatar-box" :style="{backgroundImage: `url(${avatar}`}"></div>
 
     <div class="account-info">
-      <span class="username">{{ username ||  user_info.nickname }}</span>
-
-      <span class="sid">{{ sid || user_info.userNumber }}</span>
+      <span class="username">{{ username || userInfoStore.userInfo.nickname }}</span>
+      <span class="sid">{{ sid || userInfoStore.userInfo.userNumber }}</span>
     </div>
   </div>
 </template>
 
 <style scoped>
 
-.username{
+.username {
   font: var(--td-font-body-large);
 }
-.sid{
+
+.sid {
   font: var(--td-font-body-medium);
   color: #7f7f7f;
 }
-.avatar-box{
+
+.avatar-box {
   width: 40px;
   height: 40px;
   background-size: cover;
@@ -48,7 +53,7 @@ const user_info = userInfo
   background-position: center;
 }
 
-.account-info{
+.account-info {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

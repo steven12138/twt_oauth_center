@@ -1,15 +1,14 @@
 <script setup>
 
-import { LogoWechatStrokeIcon } from 'tdesign-icons-vue-next'
 
-import logo from '@/assets/logo.png'
-import { userInfo } from '../../stores/userInfo.js'
+import { useUserInfoStore } from '@/stores/userInfo.js'
+
+const userInfoStore = useUserInfoStore()
 
 </script>
 
 
 <template>
-  <!-- 修改个人信息卡片 -->
   <div style="display: flex; flex-direction: column; gap: 20px;">
     <t-card :bordered="false" class="card-section">
       <template #title>
@@ -20,7 +19,7 @@ import { userInfo } from '../../stores/userInfo.js'
           <t-list-item-meta>
             <template #title>
               <div style="display: flex;align-items: center; gap: 10px;">
-                <span>手机号: {{ userInfo.telephone }}</span>
+                <span>手机号: {{ userInfoStore.userInfo.telephone }}</span>
                 <t-tag theme="success" variant="outline">已绑定</t-tag>
               </div>
             </template>
@@ -36,7 +35,7 @@ import { userInfo } from '../../stores/userInfo.js'
           <t-list-item-meta>
             <template #title>
               <div style="display: flex;align-items: center; gap: 10px;">
-                <span>邮箱: {{ userInfo.email }}</span>
+                <span>邮箱: {{  userInfoStore.userInfo.email }}</span>
                 <t-tag theme="success" variant="outline">已绑定</t-tag>
               </div>
             </template>
