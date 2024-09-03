@@ -124,7 +124,7 @@ const register_base_rule = {
     { validator: phone_validator, trigger: 'change' },
     { validator: phone_validator, trigger: 'blur' }
   ],
-  verify: [
+  verify_code: [
     { required: true, message: '验证码为必填项', type: 'error', trigger: 'blur' }
   ],
   email: [
@@ -212,9 +212,6 @@ async function register() {
               <span style="color: #575757">我们需要一些您的个人信息以开始：</span>
             </div>
             <t-form ref="base_form" :data="register_form" :rules="register_base_rule">
-              <t-form-item name="username" label-width="0px" :required-mark="false">
-                <t-input v-model="register_form.username" placeholder="用户名" size="large" />
-              </t-form-item>
               <t-form-item name="nickname" label-width="0px" :required-mark="false">
                 <t-input v-model="register_form.nickname" placeholder="昵称" size="large" />
               </t-form-item>
@@ -247,6 +244,10 @@ async function register() {
             </t-form>
             <div class="spacer"></div>
             <div class="action-button">
+              <t-button variant="text" shape="round" theme="primary" size="large"
+                        @click="page-=1">
+                上一步
+              </t-button>
               <t-button variant="base" shape="round" theme="primary" size="large"
                         @click="next_page_with_ref(password_form)">
                 继续
@@ -270,12 +271,12 @@ async function register() {
                 <t-input v-model="register_form.id" placeholder="证件号" size="large">
                 </t-input>
               </t-form-item>
-              
+
             </t-form>
             <div class="action-button">
-              <!--              <t-button variant="text" shape="round" theme="primary" size="large"-->
-              <!--                        @click="page-=1">上一步-->
-              <!--              </t-button>-->
+                            <t-button variant="text" shape="round" theme="primary" size="large"
+                                      @click="page-=1">上一步
+                            </t-button>
               <t-button variant="base" shape="round" theme="primary" size="large"
                         @click="next_page_with_ref(more_info_form)">
                 继续
@@ -290,7 +291,7 @@ async function register() {
               <t-form-item name="phone" label-width="0px" :required-mark="false">
                 <t-input v-model="register_form.phone" placeholder="手机号" size="medium" />
               </t-form-item>
-              <t-form-item name="verify" label-width="0px" :required-mark="false">
+              <t-form-item name="verify_code" label-width="0px" :required-mark="false">
                 <div style="display: flex;align-items: center;width: 100%;gap: 10px;">
                   <t-input v-model="register_form.verify_code" placeholder="请输入短信验证码" />
                   <t-button @click="send_verify_code" style="min-width: 100px;" variant="outline"
@@ -311,6 +312,10 @@ async function register() {
             </t-form>
             <div class="spacer"></div>
             <div class="action-button">
+              <t-button variant="text" shape="round" theme="primary" size="large"
+                        @click="page-=1">
+                上一步
+              </t-button>
               <t-button variant="base" shape="round" theme="primary" size="large"
                         @click="register">
                 完成注册
