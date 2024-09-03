@@ -24,7 +24,7 @@ const pages = {
   // },
   third_party: {
     name: '授权管理 ',
-    icon: AppIcon,
+    icon: AppIcon
   },
   setting: {
     name: '更多设置',
@@ -39,10 +39,7 @@ const options = [
   {
     content: '修改密码',
     value: 1,
-    click: () => {
-      password_change_form_ref.value.reset()
-      show_change_password.value = true
-    }
+    click: showPassword
   },
   {
     content: '退出登录',
@@ -54,6 +51,11 @@ const options = [
     }
   }
 ]
+
+function showPassword() {
+  password_change_form_ref.value.reset()
+  show_change_password.value = true
+}
 
 
 const change_page = (value) => {
@@ -174,7 +176,7 @@ async function submit_form() {
         <t-layout>
           <div class="main">
             <transition name="fade" mode="out-in">
-              <component :is="pages[pageState.current_page].view??'div'" class="view" />
+              <component @show-change-password="showPassword" :is="pages[pageState.current_page].view??'div'" class="view" />
             </transition>
           </div>
           <t-footer style="text-align: center">Copyright @ 2000-{{ new Date().getFullYear() }} TWT Studio. All Rights

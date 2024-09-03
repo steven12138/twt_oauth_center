@@ -5,6 +5,12 @@ import { useUserInfoStore } from '@/stores/userInfo.js'
 
 const userInfoStore = useUserInfoStore()
 
+const emit = defineEmits(['show-change-password'])
+
+function showPassword() {
+  emit('show-change-password')
+}
+
 </script>
 
 
@@ -66,6 +72,23 @@ const userInfoStore = useUserInfoStore()
             </div>
           </template>
         </t-list-item>
+        <t-list-item>
+          <t-list-item-meta>
+            <template #title>
+              <div style="display: flex;align-items: center; gap: 10px;">
+                <span>修改密码</span>
+              </div>
+            </template>
+            <template #description>
+              <span>
+                修改账户密码, 建议定期更换密码以保证账户安全
+              </span>
+            </template>
+          </t-list-item-meta>
+          <template #action>
+            <t-link theme="primary" @click="showPassword">修改密码</t-link>
+          </template>
+        </t-list-item>
       </t-list>
     </t-card>
 
@@ -73,12 +96,12 @@ const userInfoStore = useUserInfoStore()
       <template #title>
         <span style="font: var(--td-font-body-large); font-size: 1.3em">账号操作</span>
       </template>
-      <t-list>
+      <t-list :split="true">
         <t-list-item>
           <t-list-item-meta>
             <template #title>
               <div style="display: flex;align-items: center; gap: 10px;">
-                <span>当前账号身份: {{userInfoStore.userInfo.userNumber}} {{userInfoStore.userInfo.stuType}}</span>
+                <span>当前账号身份: {{ userInfoStore.userInfo.userNumber }} {{ userInfoStore.userInfo.stuType }}</span>
                 <t-tag theme="primary" variant="outline">账号升级</t-tag>
               </div>
             </template>
