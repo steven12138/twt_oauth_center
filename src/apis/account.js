@@ -20,8 +20,9 @@ export async function authorizeNewApp(client_id) {
 }
 
 
-export function getAppInfo(client_id) {
+export function getAppInfo(client_id, controller = null) {
   return axios.get('/api/oauth/app-info', {
+    signal: controller.signal,
     params: {
       client_id: client_id
     }
@@ -44,6 +45,7 @@ export const login = async (user, pass) => {
     'Content-Type': 'application/x-www-form-urlencoded'
   }
   const account_info = await axios.post('/api/auth/common', data, { headers: header })
+  console.log(account_info)
   useTokenManager().setToken(account_info.token)
   return account_info
 }

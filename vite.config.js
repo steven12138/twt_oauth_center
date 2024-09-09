@@ -21,7 +21,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': { // /api/oauth
-        target: 'https://api.twt.edu.cn',
+        target: 'https://localhost:8080 ',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       }

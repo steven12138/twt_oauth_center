@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { useTokenManager } from '@/stores/token_manager.js'
-import { MessagePlugin, NotifyPlugin } from 'tdesign-vue-next'
+import { NotifyPlugin } from 'tdesign-vue-next'
 
 const env = import.meta.env
 
@@ -49,13 +49,18 @@ axiosInstance.interceptors.response.use(
   (response) => {
     const err_code = response.data.error_code
     if (err_code === 0) {
-      return response.data.result
+      return {
+        ...(typeof response.data.result === 'object' ?
+          (response.data.result) :
+          ({ content: response.data.result })),
+        code: err_code
+      }
     }
     NotifyPlugin.error({
       title: '请求异常',
       content: `${response.data.message}, 错误码: ${err_code}`
     })
-    return Promise.reject(response.data)
+    return Promise.reject({ ...response.data, code: err_code })
   },
   (error) => {
     // 对响应错误做点什么

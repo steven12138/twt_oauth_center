@@ -1,11 +1,12 @@
 <script setup lang="jsx">
 import { useUserInfoStore } from '@/stores/userInfo.js'
-import { ref } from 'vue';
-import { upgrade, upgradeOption} from '@/apis/setting.js'
-import AccountSettingDialog from '../modals/AccountSettingDialog.vue';
-import AccountDeleteDialog from '../modals/AccountDeleteDialog.vue';
-import UpgradeDialog from '../modals/UpgradeDialog.vue';
-import {MessagePlugin} from 'tdesign-vue-next'
+import { ref } from 'vue'
+import { logOff, upgradeOption } from '@/apis/setting.js'
+import AccountSettingDialog from '../modals/AccountSettingDialog.vue'
+import AccountDeleteDialog from '../modals/AccountDeleteDialog.vue'
+import UpgradeDialog from '../modals/UpgradeDialog.vue'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { useRouter } from 'vue-router'
 
 const userInfoStore = useUserInfoStore()
 
@@ -16,45 +17,44 @@ function showPassword() {
 }
 
 
-const showFormDialog = ref(false);
-const mode = ref('password');
+const router = useRouter()
+
+const showFormDialog = ref(false)
+const mode = ref('password')
 
 const openDialog = (selectedMode) => {
-  mode.value = selectedMode;
-  showFormDialog.value = true;
-};
+  mode.value = selectedMode
+  showFormDialog.value = true
+}
 
-const showDeletionDialog = ref(false);
+const showDeletionDialog = ref(false)
 const toConfirmLogout = () => {
-  showDeletionDialog.value = true;
-};
+  showDeletionDialog.value = true
+}
 
 const confirmLogout = () => {
   //MessagePlugin.success("成功注销账号");
   // TODO: 正式要改回来
   logOff().then(() => {
-    MessagePlugin.success("成功注销账号");
+    MessagePlugin.success('成功注销账号')
     router.push('/login')
-  }).catch((error) => {
-    MessagePlugin.error("注销失败")
-  });
-};
+  })
+}
 
-const showUpgradeDialog = ref(false);
-const upgradeOptions = ref([]);
+const showUpgradeDialog = ref(false)
+const upgradeOptions = ref([])
 
 const fetchUpgradeOptions = async () => {
-  
-    const response = await upgradeOption();  // TODO: 这个接口返回的是什么
-    console.log(response);
-    if(response && response.length > 0) {
-      upgradeOptions.value = response;
-    }
-    else {
-      MessagePlugin.warning('当前账号无法升级')
-    }
-    
-};
+
+  const response = await upgradeOption()  // TODO: 这个接口返回的是什么
+  console.log(response)
+  if (response && response.length > 0) {
+    upgradeOptions.value = response
+  } else {
+    MessagePlugin.warning('当前账号无法升级')
+  }
+
+}
 </script>
 
 
@@ -144,7 +144,7 @@ const fetchUpgradeOptions = async () => {
             <template #title>
               <div style="display: flex; align-items: center; gap: 10px">
                 <span
-                  >当前账号身份: {{ userInfoStore.userInfo.userNumber }}
+                >当前账号身份: {{ userInfoStore.userInfo.userNumber }}
                   {{ userInfoStore.userInfo.stuType }}</span
                 >
                 <t-tag theme="primary" variant="outline">账号升级</t-tag>

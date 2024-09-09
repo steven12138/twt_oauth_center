@@ -131,6 +131,11 @@ async function submit_form() {
   show_change_password.value = false
 }
 
+window.matchMedia('(min-width: 920px)').addEventListener('change', (e) => {
+  collapsed.value = !e.matches
+})
+
+collapsed.value = !window.matchMedia('(min-width: 920px)').matches
 
 </script>
 
@@ -178,7 +183,8 @@ async function submit_form() {
         <t-layout class="layout_class">
           <div class="main">
             <transition name="fade" mode="out-in">
-              <component @show-change-password="showPassword" :is="pages[pageState.current_page].view??'div'" class="view" />
+              <component @show-change-password="showPassword" :is="pages[pageState.current_page].view??'div'"
+                         class="view" />
             </transition>
           </div>
           <t-footer style="text-align: center">Copyright @ 2000-{{ new Date().getFullYear() }} TWT Studio. All Rights
@@ -214,8 +220,9 @@ async function submit_form() {
   padding: 24px;
   flex: 1;
 }
+
 .layout_class {
-    height: calc(100vh - 56px);
-    overflow-y: auto;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
 }
 </style>

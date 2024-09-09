@@ -1,6 +1,6 @@
 <script setup lang="jsx">
 import { computed, ref } from 'vue'
-import { QuestionnaireIcon, UserIcon } from 'tdesign-icons-vue-next'
+import { UserIcon } from 'tdesign-icons-vue-next'
 import { usePageState } from '@/stores/dashboard_state.js'
 import { useUserInfoStore } from '@/stores/userInfo.js'
 
@@ -96,7 +96,6 @@ const shortcut_list = [
   }
 ]
 
-const icon = computed(() => () => < UserIcon />)
 
 const date = ref(new Date().toLocaleString())
 
@@ -106,6 +105,20 @@ setInterval(() => {
 
 
 const pageState = usePageState()
+
+const column = ref(
+  window.matchMedia('(max-width:670px)').matches ? 2 : 4
+)
+
+//column initialization
+window.matchMedia('(max-width:670px)').addEventListener('change', e => {
+  if (e.matches) {
+    column.value = 2
+  } else {
+    column.value = 4
+  }
+})
+
 
 </script>
 
@@ -126,7 +139,7 @@ const pageState = usePageState()
         <template #title>
           <span style="font: var(--td-font-body-large); font-size: 1.3em;">个人信息</span>
         </template>
-        <t-descriptions :column="4" item-layout="vertical">
+        <t-descriptions :column="column" item-layout="vertical">
           <template v-if="Object.keys(userInfoStore.userInfo).length===0">
             <t-descriptions-item v-for="(item, index) in info_key_map" :key="index"
                                  :label="item">
@@ -142,7 +155,7 @@ const pageState = usePageState()
         </t-descriptions>
       </t-card>
       <div class="privacy-row">
-        <t-card style="flex:1; overflow: hidden" :bordered="false">
+        <t-card class="privacy-card" style="flex:1; overflow: hidden" :bordered="false">
           <template #title>
             <span style="font: var(--td-font-body-large); font-size: 1.3em;">隐私与第三方应用</span>
           </template>
@@ -157,7 +170,7 @@ const pageState = usePageState()
             </t-link>
           </template>
         </t-card>
-        <t-card style="flex:1; overflow: hidden" :bordered="false">
+        <t-card class="privacy-card" style="flex:1; overflow: hidden" :bordered="false">
           <template #title>
             <span style="font: var(--td-font-body-large); font-size: 1.3em;">升学与账号升级</span>
           </template>
@@ -190,7 +203,11 @@ const pageState = usePageState()
         </template>
         <div class="shortcuts">
           <div v-for="(item, ind) in shortcut_list" :key="ind" class="shortcut-item">
-            <t-avatar size="42px" shape="circle" :icon="icon" :hide-on-load-failed="true" />
+            <t-avatar size="42px" shape="circle" :hide-on-load-failed="true">
+              <template #icon>
+                <UserIcon />
+              </template>
+            </t-avatar>
             <span>{{ item.name }}</span>
           </div>
         </div>
@@ -200,6 +217,10 @@ const pageState = usePageState()
 </template>
 
 <style scoped>
+
+.privacy-card {
+  min-width: 300px;
+}
 
 .cover-half-card {
   display: flex;
@@ -233,6 +254,7 @@ const pageState = usePageState()
 
 .privacy-row {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
   gap: 24px;
 }
@@ -279,7 +301,7 @@ const pageState = usePageState()
 }
 
 .info-first-col {
-  flex: 3 3 900px;
+  flex: 3 3 600px;
   display: flex;
   flex-direction: column;
   gap: 24px;

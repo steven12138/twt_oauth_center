@@ -1,5 +1,5 @@
 export const check_password = (password) => {
-  const pattern = /(?=.*[0-9])(?=.*[a-zA-Z])|(?=.*[0-9])(?=.*[!@#$%^&*()_+|~\-=`{}\[\]:";'<>?,./])/
+  const pattern = /(?=.*[0-9])(?=.*[a-zA-Z])|(?=.*[0-9])(?=.*[!@#$%^&*()_+|~\-=`{}[\]:";'<>?,./])/
   return pattern.test(password)
 }
 

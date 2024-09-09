@@ -38,12 +38,15 @@ const authenticate_required_pages = [
 ]
 
 
-
-
 router.beforeEach((to, from, next) => {
   if (authenticate_required_pages.indexOf(to.path) !== -1) {
-    useTokenManager().getToken() ? next() : next('/login')
-    useUserInfoStore().fetchUserInfo()
+    const token = useTokenManager().getToken()
+    if (!token) {
+      next('/login')
+    } else {
+      useUserInfoStore().fetchUserInfo()
+      next()
+    }
   }
   next()
 })

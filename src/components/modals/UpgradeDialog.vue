@@ -5,7 +5,7 @@ import { MessagePlugin } from 'tdesign-vue-next'
 
 const userInfoStore = useUserInfoStore()
 
-const props = defineProps({
+defineProps({
   visible: Boolean,
   options: {
     type: Array,

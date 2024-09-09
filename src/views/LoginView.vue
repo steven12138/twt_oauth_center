@@ -3,11 +3,10 @@
 import { onMounted, reactive, ref } from 'vue'
 import AccountColumn from '@/components/AccountColumn.vue'
 import * as account from '@/apis/account.js'
-import { MessagePlugin, NotifyPlugin } from 'tdesign-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 import { useRoute, useRouter } from 'vue-router'
 import { useTokenManager } from '@/stores/token_manager.js'
 import SwitchAccountColumn from '@/components/SwitchAccountColumn.vue'
-
 
 const route = useRoute()
 const router = useRouter()
@@ -36,9 +35,13 @@ async function restoreInfo() {
     })
 }
 
+const tokenManager = useTokenManager()
+const controller = new AbortController()
+
+
 function updateAppInfo() {
 
-  account.getAppInfo(client_id).then((info) => {
+  account.getAppInfo(client_id, controller).then((info) => {
     app_info = info
   }).catch((error) => {
     console.log(error)
@@ -48,7 +51,7 @@ function updateAppInfo() {
 onMounted(async () => {
 
   loading.value = true
-  if (useTokenManager().getToken() != null) {
+      if (tokenManager.getToken() != null) {
     await restoreInfo()
     if (isOAuth) {
       updateAppInfo()
@@ -109,14 +112,22 @@ let currentPhase = ref(AuthPhase.USERNAME)
 let account_info = reactive({})
 let privileges = reactive([])
 
+const redirectURL = (url) => {
+  controller.abort('redirect')
+  window.location.href = url
+}
+
 const tryAuthorize = async () => {
   await account.getAuthorizeCode(client_id, redirect_uri, state, response_type)
     .then((auth_result) => {
+      console.log(auth_result)
       if (auth_result.action === 1) {
-        window.location.href = auth_result.data
+        redirectURL(auth_result.data)
       } else if (auth_result.action === 0) {
         privileges = auth_result.data
         currentPhase.value = AuthPhase.AUTHENTICATE
+      } else if (auth_result.code === 0) {
+        redirectURL(redirect_uri + `?token=${tokenManager.getToken()}`)
       } else {
         MessagePlugin.error('未定义的授权行为')
       }
@@ -128,18 +139,24 @@ const tryAuthorize = async () => {
 }
 
 const tryLogin = async ({ validateResult }) => {
+  if (currentPhase.value === AuthPhase.USERNAME) {
+    if (!validateResult) return
+    nextStep()
+    return
+  }
+
   if (!validateResult) return
   loading.value = true
 
   await account.login(login_data.username, login_data.password)
     .then((info) => {
       account_info = info
+      console.log(isOAuth)
       if (isOAuth)
         tryAuthorize()
       else {
-        router.push({
-          name: 'home'
-        })
+        router.replace('/')
+
       }
     })
     .catch((error) => {
@@ -211,18 +228,19 @@ const logout = () => {
           </div>
         </div>
         <transition name="slide-fade" mode="out-in">
+
           <div class="step" v-if="currentPhase===AuthPhase.USERNAME || currentPhase === AuthPhase.PASSWORD">
             <span class="action-name">登录</span>
             <t-form :rules="LOGIN_RULE" ref="login_form" :data="login_data" @validate="tryLogin">
               <t-form-item name="username" label-width="0px" :required-mark="false">
                 <t-input v-model="login_data.username" placeholder="用户名" size="large" />
               </t-form-item>
-              <t-form-item name="password" label-width="0px" :required-mark="false">
-                <transition name="fade">
-                  <t-input v-if="showPasswordInputBox" v-model="login_data.password" type="password" placeholder="密码"
+              <transition name="fade">
+                <t-form-item v-if="showPasswordInputBox" name="password" label-width="0px" :required-mark="false">
+                  <t-input @enter="nextStep" v-model="login_data.password" type="password" placeholder="密码"
                            size="large" />
-                </transition>
-              </t-form-item>
+                </t-form-item>
+              </transition>
             </t-form>
             <div class="spacer"></div>
             <div class="action-button">
@@ -234,6 +252,8 @@ const logout = () => {
               </t-button>
             </div>
           </div>
+
+
           <div class="step" v-else-if="currentPhase=== AuthPhase.AUTHENTICATE">
             <div class="action-content">
               <span class="action-name">使用天外天账号登录{{ app_info.name }}</span>

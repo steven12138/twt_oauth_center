@@ -22,7 +22,7 @@ export function updateEmail(email) {
   })
 }
 
-export function getVcode(phone) {
+export function getVerifyCode(phone) {
   const params = new URLSearchParams()
   params.append('phone', phone)
 

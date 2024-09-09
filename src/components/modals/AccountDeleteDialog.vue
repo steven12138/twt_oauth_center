@@ -1,26 +1,26 @@
 <script setup lang="jsx">
-  import { ref } from 'vue';
-  
-  const props = defineProps({
-    visible: Boolean,
-  });
-  
-  const emit = defineEmits(['update:visible', 'confirm']);
-  
-  const confirmationString = "我确认进行账号注销";
-  const inputValue = ref('');
-  
-  const onCancel = () => {
-    emit('update:visible', false);
-    inputValue.value = ''
-  };
-  
-  const onConfirm = () => {
-    emit('confirm');
-    emit('update:visible', false);
-  };
-  </script>
-  
+import { ref } from 'vue'
+
+defineProps({
+  visible: Boolean
+})
+
+const emit = defineEmits(['update:visible', 'confirm'])
+
+const confirmationString = '我确认进行账号注销'
+const inputValue = ref('')
+
+const onCancel = () => {
+  emit('update:visible', false)
+  inputValue.value = ''
+}
+
+const onConfirm = () => {
+  emit('confirm')
+  emit('update:visible', false)
+}
+</script>
+
 
 <template>
   <t-dialog :visible="visible" header="确认注销账号" :footer="null" @close="onCancel">

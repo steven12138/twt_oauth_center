@@ -4,6 +4,7 @@ import * as account from '@/apis/account.js'
 import * as setting from '@/apis/setting.js'
 import { MessagePlugin } from 'tdesign-vue-next'
 import { useUserInfoStore } from '@/stores/userInfo.js'
+import { check_password } from '@/utils/verify.js'
 
 const props = defineProps({
   visible: Boolean,
@@ -162,7 +163,7 @@ async function sendVcode() {
     MessagePlugin.error(phoneValidation.message)
     return
   }
-  await setting.getVcode(formData.value.new_phone)
+  await setting.getVerifyCode(formData.value.new_phone)
   MessagePlugin.success('验证码已发送')
   verify_cooldown.value = 60
   const now = new Date().getTime()
@@ -209,7 +210,7 @@ async function sendVcode() {
             v-model="formData.vcode"
             style="width: 50%; margin-right: 10px"
           />
-          <t-button @click="sendVcode" :disabled="verify_cooldown !== 0" style="width: 40%">{{
+          <t-button size="large" variant="outline" @click="sendVcode" :disabled="verify_cooldown !== 0" style="width: 40%">{{
             verify_cooldown !== 0 ? `${verify_cooldown}s` : '发送验证码'
           }}</t-button>
         </div>
